@@ -16,7 +16,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     // ResponseEntity<T> -> represents entire HTTP response
     // include status, code, response headers, and response body
     // ResponseEntity<Void> = status code + headers but no content in response
