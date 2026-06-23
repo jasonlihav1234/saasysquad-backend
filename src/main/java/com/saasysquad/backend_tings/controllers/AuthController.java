@@ -1,6 +1,7 @@
 package com.saasysquad.backend_tings.controllers;
 
 import com.saasysquad.backend_tings.dto.request.RegisterRequest;
+import com.saasysquad.backend_tings.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +22,16 @@ public class AuthController {
     // ResponseEntity<T> -> represents entire HTTP response
     // include status, code, response headers, and response body
     // ResponseEntity<Void> = status code + headers but no content in response
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest req) {
+    public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
         String email = req.email();
         String password = req.password();
         String username = req.username();
 
-        authService.register(email, password, username);
+        User newUser = authService.register(email, password, username);
 
         // uses builder pattern if you want to return nothing
         // need .body if you want to return something
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(newUser);
     }
 
     @GetMapping("/testroute")
