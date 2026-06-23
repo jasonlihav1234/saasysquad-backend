@@ -1,4 +1,4 @@
-package dto.request;
+package com.saasysquad.backend_tings.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
