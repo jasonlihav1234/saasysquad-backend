@@ -4,7 +4,8 @@ import com.saasysquad.backend_tings.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Repository
 public class UserRepository {
@@ -25,7 +26,7 @@ public class UserRepository {
                             user.getUsername(),
                             user.getEmail(),
                             user.getPasswordHash(),
-                            Instant.now().toString());
+                            Timestamp.valueOf(LocalDateTime.now()));
 
         return user;
     }

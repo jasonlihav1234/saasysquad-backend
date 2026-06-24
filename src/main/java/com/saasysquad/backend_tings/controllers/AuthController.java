@@ -2,7 +2,9 @@ package com.saasysquad.backend_tings.controllers;
 
 import com.saasysquad.backend_tings.dto.request.RegisterRequest;
 import com.saasysquad.backend_tings.model.User;
+import com.saasysquad.backend_tings.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +14,16 @@ import com.saasysquad.backend_tings.services.AuthService;
 @RequestMapping("/api/users")
 public class AuthController {
     private final AuthService authService;
+    private final UserRepository userRepository;
+
+    @Value("${spring.datasource.url}")
+    private String testValue;
 
     @Autowired
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserRepository userRepository) {
+        System.out.println(testValue);
         this.authService = authService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
@@ -31,7 +39,7 @@ public class AuthController {
 
         // uses builder pattern if you want to return nothing
         // need .body if you want to return something
-        return ResponseEntity.status(HttpStatus.OK).body(newUser);
+        return ResponseEntity.status(HttpStatus.OK).body(userRepository.create(newUser));
     }
 
     @GetMapping("/testroute")
