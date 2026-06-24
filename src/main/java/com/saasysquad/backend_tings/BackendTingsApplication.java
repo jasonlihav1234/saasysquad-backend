@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BackendTingsApplication {
 
 	public static void main(String[] args) {
-		System.out.println("RAW ENV VAR: [" + System.getenv("DATABASE_URL") + "]");
 		SpringApplication.run(BackendTingsApplication.class, args);
 	}
 

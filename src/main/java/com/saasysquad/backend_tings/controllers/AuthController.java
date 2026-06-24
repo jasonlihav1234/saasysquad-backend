@@ -16,12 +16,8 @@ public class AuthController {
     private final AuthService authService;
     private final UserRepository userRepository;
 
-    @Value("${spring.datasource.url}")
-    private String testValue;
-
     @Autowired
     public AuthController(AuthService authService, UserRepository userRepository) {
-        System.out.println(testValue);
         this.authService = authService;
         this.userRepository = userRepository;
     }
