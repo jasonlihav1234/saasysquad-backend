@@ -1,6 +1,7 @@
 package com.saasysquad.backend_tings.services.impl;
 
 import com.saasysquad.backend_tings.model.User;
+import com.saasysquad.backend_tings.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.saasysquad.backend_tings.services.AuthService;
@@ -10,9 +11,11 @@ import java.util.UUID;
 @Service
 public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    public AuthServiceImpl(PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -25,11 +28,12 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPasswordHash(hashedPassword);
         newUser.setUsername(username);
 
-        return newUser;
+        return userRepository.create(newUser);
     }
 
     @Override
     public User login(String email, String password) {
+
         return null;
     }
 }

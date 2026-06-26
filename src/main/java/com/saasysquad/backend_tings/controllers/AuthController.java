@@ -14,12 +14,10 @@ import com.saasysquad.backend_tings.services.AuthService;
 @RequestMapping("/api/users")
 public class AuthController {
     private final AuthService authService;
-    private final UserRepository userRepository;
 
     @Autowired
     public AuthController(AuthService authService, UserRepository userRepository) {
         this.authService = authService;
-        this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
@@ -31,11 +29,9 @@ public class AuthController {
         String password = req.password();
         String username = req.username();
 
-        User newUser = authService.register(email, password, username);
-
         // uses builder pattern if you want to return nothing
         // need .body if you want to return something
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.create(newUser));
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(email, password, username));
     }
 
     @GetMapping("/testroute")
