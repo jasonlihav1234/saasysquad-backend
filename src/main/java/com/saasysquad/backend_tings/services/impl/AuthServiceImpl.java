@@ -1,5 +1,6 @@
 package com.saasysquad.backend_tings.services.impl;
 
+import com.saasysquad.backend_tings.exceptions.InvalidCredentialsException;
 import com.saasysquad.backend_tings.model.User;
 import com.saasysquad.backend_tings.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +34,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
 
         return null;
     }
