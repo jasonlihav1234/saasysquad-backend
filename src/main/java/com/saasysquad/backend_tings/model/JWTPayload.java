@@ -6,6 +6,15 @@ public class JWTPayload {
     private String tokenType;
     private Long expiresIn;
 
+    public JWTPayload() {}
+
+    public JWTPayload(String accessToken, String refreshToken, String tokenType, Long expiresIn) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.tokenType = tokenType;
+        this.expiresIn = expiresIn;
+    }
+
     public String getAccessToken() {
         return accessToken;
     }
