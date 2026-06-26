@@ -1,6 +1,8 @@
 package com.saasysquad.backend_tings.repository;
 
+import com.saasysquad.backend_tings.exceptions.UserAlreadyExistsException;
 import com.saasysquad.backend_tings.model.User;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,13 +22,16 @@ public class UserRepository {
                     "(user_id, user_name, email, password_hash, created_at) " +
                     "values " +
                     "(?, ?, ? ,? ,?)";
-
-        jdbcTemplate.update(sql,
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getPasswordHash(),
-                            Timestamp.valueOf(LocalDateTime.now()));
+        try {
+            jdbcTemplate.update(sql,
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getPasswordHash(),
+                    Timestamp.valueOf(LocalDateTime.now()));
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAlreadyExistsException("User already exists " + user.getEmail(), e);
+        }
 
         return user;
     }
