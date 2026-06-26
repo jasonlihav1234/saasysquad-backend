@@ -27,4 +27,9 @@ public class AuthServiceImpl implements AuthService {
 
         return newUser;
     }
+
+    @Override
+    public User login(String email, String password) {
+        return null;
+    }
 }
