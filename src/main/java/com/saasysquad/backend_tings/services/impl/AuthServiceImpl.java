@@ -33,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User login(String email, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new);
 
         return null;
     }

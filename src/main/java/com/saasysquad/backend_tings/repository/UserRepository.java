@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -34,5 +36,20 @@ public class UserRepository {
         }
 
         return user;
+    }
+
+    public Optional<User> findByEmail(String email) {
+        String sql = "select * from users where email = ?";
+
+        List<User> users = jdbcTemplate.query(sql, (row, rowNum) -> {
+            User user = new User();
+            user.setId(row.getObject("user_id", java.util.UUID.class));
+            user.setEmail(row.getString("email"));
+            user.setUsername(row.getString("user_name"));
+            user.setPasswordHash((row.getString("password_hash")));
+            return user;
+        }, email);
+
+        return users.stream().findFirst();
     }
 }
