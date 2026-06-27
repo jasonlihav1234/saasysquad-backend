@@ -4,11 +4,11 @@ public class JWTPayload {
     private String accessToken;
     private String refreshToken;
     private String tokenType;
-    private Long expiresIn;
+    private long expiresIn;
 
     public JWTPayload() {}
 
-    public JWTPayload(String accessToken, String refreshToken, String tokenType, Long expiresIn) {
+    public JWTPayload(String accessToken, String refreshToken, String tokenType, long expiresIn) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenType = tokenType;

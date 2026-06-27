@@ -1,6 +1,8 @@
 package com.saasysquad.backend_tings.controllers;
 
+import com.saasysquad.backend_tings.dto.request.LoginRequest;
 import com.saasysquad.backend_tings.dto.request.RegisterRequest;
+import com.saasysquad.backend_tings.model.JWTPayload;
 import com.saasysquad.backend_tings.model.User;
 import com.saasysquad.backend_tings.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,14 @@ public class AuthController {
         // uses builder pattern if you want to return nothing
         // need .body if you want to return something
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(email, password, username));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<JWTPayload> login(@RequestBody LoginRequest req) {
+        String email = req.email();
+        String password = req.password();
+
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(email, password));
     }
 
     @GetMapping("/testroute")

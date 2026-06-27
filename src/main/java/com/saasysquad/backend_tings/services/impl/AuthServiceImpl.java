@@ -39,7 +39,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JWTPayload login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
-        JWTPayload jwtPayload = jwtService.createSessionTokens(user.getId(), user.getEmail());
-        return jwtPayload;
+        return jwtService.createSessionTokens(user.getId(), user.getEmail());
     }
 }

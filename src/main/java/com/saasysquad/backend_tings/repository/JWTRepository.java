@@ -50,7 +50,5 @@ public class JWTRepository {
                 null,
                 Date.from(Instant.now()),
                 sessionId);
-
-        return;
     }
 }

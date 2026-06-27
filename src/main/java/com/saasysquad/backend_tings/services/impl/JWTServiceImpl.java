@@ -1,6 +1,7 @@
 package com.saasysquad.backend_tings.services.impl;
 
 import com.saasysquad.backend_tings.model.JWTPayload;
+import com.saasysquad.backend_tings.model.RefreshToken;
 import com.saasysquad.backend_tings.repository.JWTRepository;
 import com.saasysquad.backend_tings.services.JWTService;
 import io.jsonwebtoken.Jwts;
@@ -35,12 +36,12 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public JWTPayload createSessionTokens(UUID userId, String email) {
         String accessToken = createAccessToken(userId, email);
-        String refreshToken = createRefreshToken(userId, email);
+        RefreshToken refreshToken = createRefreshToken(userId, email);
         UUID sessionId = UUID.randomUUID();
 
-//        jwtRepository.
+        jwtRepository.storeRefreshToken(userId, sessionId, refreshToken.getTokenId());
 
-        return new JWTPayload(accessToken, refreshToken, "Bearer", 600);
+        return new JWTPayload(accessToken, refreshToken.getRefreshToken(), "Bearer", 600);
     }
 
     public String createAccessToken(UUID userId, String email) {
@@ -59,10 +60,9 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
     }
 
-    public String createRefreshToken(UUID userId, String email) {
+    public RefreshToken createRefreshToken(UUID userId, String email) {
         UUID tokenId = generateTokenId();
-
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .subject(userId.toString())
                 .claim("type", "refresh")
                 .id(tokenId.toString())
@@ -72,5 +72,7 @@ public class JWTServiceImpl implements JWTService {
                 .audience().add("saasysquad-api").and()
                 .signWith(Keys.hmacShaKeyFor(refreshSecret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
+
+        return new RefreshToken(tokenId, refreshToken);
     }
 }
