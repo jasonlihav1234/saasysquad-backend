@@ -53,4 +53,20 @@ public class JWTServiceImpl implements JWTService {
                 .signWith(Keys.hmacShaKeyFor(accessSecret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
     }
+
+    @Override
+    public String createRefreshToken(UUID userId, String email) {
+        UUID tokenId = generateTokenId();
+
+        return Jwts.builder()
+                .subject(userId.toString())
+                .claim("type", "refresh")
+                .id(tokenId.toString())
+                .issuedAt(new Date())
+                .expiration(Date.from(Instant.now().plus(Duration.ofDays(7))))
+                .issuer("saasysquad-auth")
+                .audience().add("saasysquad-api").and()
+                .signWith(Keys.hmacShaKeyFor(refreshSecret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
+                .compact();
+    }
 }
