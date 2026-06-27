@@ -6,4 +6,6 @@ import java.util.UUID;
 
 public interface JWTService {
     public JWTPayload createSessionTokens(UUID userId, String email);
+    public String createAccessToken(UUID userId, String email);
+//    public String createRefreshToken()
 }
