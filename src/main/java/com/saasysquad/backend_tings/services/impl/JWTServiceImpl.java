@@ -34,10 +34,15 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public JWTPayload createSessionTokens(UUID userId, String email) {
-        return null;
+        String accessToken = createAccessToken(userId, email);
+        String refreshToken = createRefreshToken(userId, email);
+        UUID sessionId = UUID.randomUUID();
+
+//        jwtRepository.
+
+        return new JWTPayload(accessToken, refreshToken, "Bearer", 600);
     }
 
-    @Override
     public String createAccessToken(UUID userId, String email) {
         UUID tokenId = generateTokenId();
 
@@ -54,7 +59,6 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
     }
 
-    @Override
     public String createRefreshToken(UUID userId, String email) {
         UUID tokenId = generateTokenId();
 
