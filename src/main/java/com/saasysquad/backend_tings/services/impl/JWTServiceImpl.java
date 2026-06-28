@@ -4,6 +4,7 @@ import com.saasysquad.backend_tings.model.JWTPayload;
 import com.saasysquad.backend_tings.model.RefreshToken;
 import com.saasysquad.backend_tings.repository.JWTRepository;
 import com.saasysquad.backend_tings.services.JWTService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,8 @@ public class JWTServiceImpl implements JWTService {
     public UUID generateTokenId() {
         return UUID.randomUUID();
     }
+
+    // can make a post construct which makes access key hmacShaKeyFor
 
     @Override
     public JWTPayload createSessionTokens(UUID userId, String email) {
@@ -74,5 +77,23 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
 
         return new RefreshToken(tokenId, refreshToken);
+    }
+
+    @Override
+    public Claims verifyAccessToken(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(accessSecret.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    @Override
+    public Claims verifyRefreshToken(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(refreshSecret.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
