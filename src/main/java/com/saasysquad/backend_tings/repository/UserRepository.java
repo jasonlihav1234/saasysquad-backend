@@ -1,6 +1,7 @@
 package com.saasysquad.backend_tings.repository;
 
 import com.saasysquad.backend_tings.exceptions.UserAlreadyExistsException;
+import com.saasysquad.backend_tings.exceptions.UserNotFoundException;
 import com.saasysquad.backend_tings.model.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,5 +52,18 @@ public class UserRepository {
         }, email);
 
         return users.stream().findFirst();
+    }
+
+    public void updatePasswordByEmail(String email, String passwordHash) {
+        String sql = """
+        update users
+        set password_hash = ?
+        where email = ?
+        """;
+
+        int rowsAffected = jdbcTemplate.update(sql, passwordHash, email);
+        if (rowsAffected == 0) {
+            throw new UserNotFoundException("No user found with email: " + email);
+        }
     }
 }

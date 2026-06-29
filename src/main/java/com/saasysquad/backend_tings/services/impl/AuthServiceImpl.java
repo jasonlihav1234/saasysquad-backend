@@ -74,6 +74,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String passwordHash = passwordEncoder.encode(password);
+        userRepository.updatePasswordByEmail(email, passwordHash);
 
         redisTemplate.delete("resetPassword:" + email);
 
