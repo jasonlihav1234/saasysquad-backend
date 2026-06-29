@@ -1,6 +1,7 @@
 package com.saasysquad.backend_tings.services.impl;
 
 import com.saasysquad.backend_tings.exceptions.InvalidCredentialsException;
+import com.saasysquad.backend_tings.exceptions.UserNotFoundException;
 import com.saasysquad.backend_tings.model.JWTPayload;
 import com.saasysquad.backend_tings.model.User;
 import com.saasysquad.backend_tings.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.saasysquad.backend_tings.services.AuthService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,5 +42,18 @@ public class AuthServiceImpl implements AuthService {
     public JWTPayload login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
         return jwtService.createSessionTokens(user.getId(), user.getEmail());
+    }
+
+    public User checkUser(String email, String password) throws UserNotFoundException {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isEmpty()) return null;
+
+        User user = optionalUser.get();
+        boolean checkPassword = passwordEncoder.matches(user.getPasswordHash(), password);
+
+        if (!checkPassword) return null;
+
+        return user;
     }
 }
