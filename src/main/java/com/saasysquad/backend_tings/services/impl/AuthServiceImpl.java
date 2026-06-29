@@ -1,11 +1,14 @@
 package com.saasysquad.backend_tings.services.impl;
 
 import com.saasysquad.backend_tings.exceptions.InvalidCredentialsException;
+import com.saasysquad.backend_tings.exceptions.InvalidPasswordException;
+import com.saasysquad.backend_tings.exceptions.ResetPasswordTokenInvalidException;
 import com.saasysquad.backend_tings.exceptions.UserNotFoundException;
 import com.saasysquad.backend_tings.model.JWTPayload;
 import com.saasysquad.backend_tings.model.User;
 import com.saasysquad.backend_tings.repository.UserRepository;
 import com.saasysquad.backend_tings.services.JWTService;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.saasysquad.backend_tings.services.AuthService;
@@ -18,11 +21,13 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JWTService jwtService;
+    private final StringRedisTemplate redisTemplate;
 
-    public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, JWTService jwtService) {
+    public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, JWTService jwtService, StringRedisTemplate redisTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -56,4 +61,23 @@ public class AuthServiceImpl implements AuthService {
 
         return user;
     }
+
+    public String resetPassword(String email, String token, String password) {
+        if (password.length() < 7) {
+            throw new InvalidPasswordException("Password is too short");
+        }
+
+        String resetPasswordToken = redisTemplate.opsForValue().get("resetPassword:" + email);
+
+        if (resetPasswordToken == null || !resetPasswordToken.equals(token)) {
+            throw new ResetPasswordTokenInvalidException("Password token not found");
+        }
+
+        String passwordHash = passwordEncoder.encode(password);
+
+        redisTemplate.delete("resetPassword:" + email);
+
+        return "Password successfully updated";
+    }
+
 }
